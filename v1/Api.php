@@ -43,21 +43,22 @@ if (isset($_GET['apicall'])) {
     switch ($_GET['apicall']) {
 
         //the CREATE operation
-        //if the api call value is 'createhero'
+        //if the api call value is 'createcustomer'
         //we will create a record in the database
-        case 'createhero':
+        case 'createcustomer':
             //first check the parameters required for this request are available or not
-            isTheseParametersAvailable(array('name', 'realname', 'rating', 'teamaffiliation'));
+            isTheseParametersAvailable(array('name', 'surname', 'email', 'username','password'));
 
             //creating a new dboperation object
             $db = new DbOperation();
 
             //creating a new record in the database
-            $result = $db->createHero(
+            $result = $db->createCustomer(
                 $_POST['name'],
-                $_POST['realname'],
-                $_POST['rating'],
-                $_POST['teamaffiliation']
+                $_POST['surname'],
+                $_POST['email'],
+                $_POST['username'],
+                $_POST['password']
             );
 
 
@@ -67,10 +68,10 @@ if (isset($_GET['apicall'])) {
                 $response['error'] = false;
 
                 //in message we have a success message
-                $response['message'] = 'Hero addedd successfully';
+                $response['message'] = 'Customer addedd successfully';
 
                 //and we are getting all the heroes from the database in the response
-                $response['heroes'] = $db->getCustomers();
+                $response['customers'] = $db->getCustomers();
             } else {
 
                 //if record is not added that means there is an error

@@ -23,10 +23,10 @@ class DbOperation
     * The create operation
     * When this method is called a new record is created in the database
     */
-    function createHero($name, $realname, $rating, $teamaffiliation)
+    function createCustomer($name, $surname, $email, $username, $password)
     {
-        $stmt = $this->con->prepare("INSERT INTO heroes (name, realname, rating, teamaffiliation) VALUES (?, ?, ?, ?)");
-        $stmt->bind_param("ssis", $name, $realname, $rating, $teamaffiliation);
+        $stmt = $this->con->prepare("INSERT INTO customer (name, surname, email, username, password) VALUES (?, ?, ?, ?, ?)");
+        $stmt->bind_param("sssss", $name,$surname, $email, $username, $password);
         if ($stmt->execute())
             return true;
         return false;
@@ -58,19 +58,25 @@ class DbOperation
 
     function getLogin($email, $password)
     {
-        $temp="false";
         $stmt = $this->con->prepare("SELECT `user-id` as id, username, email, password FROM customer WHERE email=? AND password=?");
         $stmt->bind_param( "ss",$email, $password);
         $stmt->execute();
         $stmt->store_result();
 
         if($stmt->num_rows > 0) {
-            //while ($stmt->fetch()) {
-                $temp="true";
-            //}
+            $stmt->bind_result($id,$username, $email, $password);
+            while ($stmt->fetch()) {
+                $customer = array();
+                $customer['id'] = $id;
+                $customer['username'] = $username;
+                $customer['email'] = $email;
+                $customer['password'] = $password;
+            }
+
+            return $customer;
         }
 
-        return $temp;
+        return NULL;
     }
 
     /*
