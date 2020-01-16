@@ -88,8 +88,19 @@ if (isset($_GET['apicall'])) {
             $db = new DbOperation();
             $response['error'] = false;
             $response['message'] = 'Request successfully completed';
-            $response['heroes'] = $db->getCustomers();
+            $response['customers'] = $db->getCustomers();
             break;
+
+        //the READ operation
+        //if the call is getheroes
+        case 'getlogin':
+            if (isset($_GET['email']) and isset($_GET['password'])) {
+                $db = new DbOperation();
+                $response['error'] = false;
+                $response['message'] = 'Request successfully completed';
+                $response['customer'] = $db->getLogin($_GET['email'], $_GET['password']);
+                break;
+            }
 
 
         //the UPDATE operation
