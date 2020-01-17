@@ -47,7 +47,7 @@ if (isset($_GET['apicall'])) {
         //we will create a record in the database
         case 'createcustomer':
             //first check the parameters required for this request are available or not
-            isTheseParametersAvailable(array('name', 'surname', 'email', 'username','password'));
+            isTheseParametersAvailable(array('name', 'surname', 'email', 'username', 'password'));
 
             //creating a new dboperation object
             $db = new DbOperation();
@@ -71,7 +71,7 @@ if (isset($_GET['apicall'])) {
                 $response['message'] = 'Customer addedd successfully';
 
                 //and we are getting all the heroes from the database in the response
-                $response['customers'] = $db->getCustomers();
+                //$response['customers'] = $db->getCustomers();
             } else {
 
                 //if record is not added that means there is an error
@@ -97,9 +97,17 @@ if (isset($_GET['apicall'])) {
         case 'getlogin':
             if (isset($_GET['email']) and isset($_GET['password'])) {
                 $db = new DbOperation();
-                $response['error'] = false;
-                $response['message'] = 'Request successfully completed';
-                $response['customer'] = $db->getLogin($_GET['email'], $_GET['password']);
+
+                $result = $db->getLogin($_GET['email'], $_GET['password']);
+                if ($result == null) {
+                    $response['error'] = true;
+                    $response['message'] = 'Couldn\'t login..';
+                } else {
+                    $response['error'] = false;
+                    $response['message'] = 'Request successfully completed';
+                }
+                $response['customer'] = $result;
+
                 break;
             }
 

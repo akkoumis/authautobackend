@@ -25,10 +25,17 @@ class DbOperation
     */
     function createCustomer($name, $surname, $email, $username, $password)
     {
-        $stmt = $this->con->prepare("INSERT INTO customer (name, surname, email, username, password) VALUES (?, ?, ?, ?, ?)");
-        $stmt->bind_param("sssss", $name,$surname, $email, $username, $password);
-        if ($stmt->execute())
-            return true;
+        $stmt1 = $this->con->prepare("SELECT `user-id` as id, username, email, password FROM customer WHERE email=? OR username=?");
+        $stmt1->bind_param("ss", $email, $username);
+        $stmt1->execute();
+        $stmt1->store_result();
+
+        if ($stmt1->num_rows == 0) {
+            $stmt = $this->con->prepare("INSERT INTO customer (name, surname, email, username, password) VALUES (?, ?, ?, ?, ?)");
+            $stmt->bind_param("sssss", $name, $surname, $email, $username, $password);
+            if ($stmt->execute())
+                return true;
+        }
         return false;
     }
 
@@ -59,12 +66,12 @@ class DbOperation
     function getLogin($email, $password)
     {
         $stmt = $this->con->prepare("SELECT `user-id` as id, username, email, password FROM customer WHERE email=? AND password=?");
-        $stmt->bind_param( "ss",$email, $password);
+        $stmt->bind_param("ss", $email, $password);
         $stmt->execute();
         $stmt->store_result();
 
-        if($stmt->num_rows > 0) {
-            $stmt->bind_result($id,$username, $email, $password);
+        if ($stmt->num_rows > 0) {
+            $stmt->bind_result($id, $username, $email, $password);
             while ($stmt->fetch()) {
                 $customer = array();
                 $customer['id'] = $id;
