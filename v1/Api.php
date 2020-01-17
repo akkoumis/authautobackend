@@ -111,48 +111,14 @@ if (isset($_GET['apicall'])) {
                 break;
             }
 
-
-        //the UPDATE operation
-        case 'updatehero':
-            isTheseParametersAvailable(array('id', 'name', 'realname', 'rating', 'teamaffiliation'));
+        case 'getavailablevehicles':
             $db = new DbOperation();
-            $result = $db->updateHero(
-                $_POST['id'],
-                $_POST['name'],
-                $_POST['realname'],
-                $_POST['rating'],
-                $_POST['teamaffiliation']
-            );
-
-            if ($result) {
-                $response['error'] = false;
-                $response['message'] = 'Hero updated successfully';
-                $response['heroes'] = $db->getCustomers();
-            } else {
-                $response['error'] = true;
-                $response['message'] = 'Some error occurred please try again';
-            }
+            $response['error'] = false;
+            $response['message'] = 'Request successfully completed';
+            $response['customers'] = $db->getAvailableVehicles();
             break;
 
-        //the delete operation
-        case 'deletehero':
 
-            //for the delete operation we are getting a GET parameter from the url having the id of the record to be deleted
-            if (isset($_GET['id'])) {
-                $db = new DbOperation();
-                if ($db->deleteHero($_GET['id'])) {
-                    $response['error'] = false;
-                    $response['message'] = 'Hero deleted successfully';
-                    $response['heroes'] = $db->getCustomers();
-                } else {
-                    $response['error'] = true;
-                    $response['message'] = 'Some error occurred please try again';
-                }
-            } else {
-                $response['error'] = true;
-                $response['message'] = 'Nothing to delete, provide an id please';
-            }
-            break;
     }
 
 } else {

@@ -63,6 +63,37 @@ class DbOperation
         return $customers;
     }
 
+    function getAvailableVehicles()
+    {
+        $stmt = $this->con->prepare("SELECT * FROM availablevehicles");
+        $stmt->execute();
+        $stmt->bind_result($manufacturer, $model, $NCAP, $year, $imageurl, $fuel, $mpge, $plate, $color, $coordinates, $pricepermin, $rating);
+
+        $customers = array();
+
+        while ($stmt->fetch()) {
+            $customer = array();
+            $customer['manufacturer'] = $manufacturer;
+            $customer['model'] = $model;
+            $customer['NCAP'] = $NCAP;
+            $customer['year'] = $year;
+            $customer['imageurl'] = $imageurl;
+            $customer['fuel'] = $fuel;
+            $customer['mpge'] = $mpge;
+            $customer['plate'] = $plate;
+            $customer['color'] = $color;
+            //$customer['coordinates'] = $coordinates;
+            $customer['pricepermin'] = $pricepermin;
+            $customer['rating'] = $rating;/**/
+
+
+
+            array_push($customers, $customer);
+        }
+
+        return $customers;
+    }
+
     function getLogin($email, $password)
     {
         $stmt = $this->con->prepare("SELECT `user-id` as id, username, email, password FROM customer WHERE email=? AND password=?");
@@ -84,33 +115,5 @@ class DbOperation
         }
 
         return NULL;
-    }
-
-    /*
-    * The update operation
-    * When this method is called the record with the given id is updated with the new given values
-    */
-    function updateHero($id, $name, $realname, $rating, $teamaffiliation)
-    {
-        $stmt = $this->con->prepare("UPDATE heroes SET name = ?, realname = ?, rating = ?, teamaffiliation = ? WHERE id = ?");
-        $stmt->bind_param("ssisi", $name, $realname, $rating, $teamaffiliation, $id);
-        if ($stmt->execute())
-            return true;
-        return false;
-    }
-
-
-    /*
-    * The delete operation
-    * When this method is called record is deleted for the given id
-    */
-    function deleteHero($id)
-    {
-        $stmt = $this->con->prepare("DELETE FROM heroes WHERE id = ? ");
-        $stmt->bind_param("i", $id);
-        if ($stmt->execute())
-            return true;
-
-        return false;
     }
 }
